@@ -1,23 +1,55 @@
-<mat-card>
-    <mat-card-content>
-        <form #loginForm="ngForm" (ngSubmit)="onSubmit()">
-            <h2>Log In</h2>
-            <mat-error *ngIf="!isLoggedIn">
-                The username and password were not recognized
-            </mat-error>
-            <mat-form-field>
-                <input matInput placeholder="Username" [(ngModel)]="username" name="username" required>
-                <mat-error>
-                    Please provide a valid email address
-                </mat-error>
-            </mat-form-field>
-            <mat-form-field>
-                <input matInput type="password" placeholder="Password" [(ngModel)]="password" name="password" required>
-                <mat-error>
-                    Please provide a valid password
-                </mat-error>
-            </mat-form-field>
-            <button mat-raised-button color="primary" [disabled]="!loginForm.form.valid">Login</button>
-        </form>
-    </mat-card-content>
-</mat-card>
+<div class="text-center">
+  <h2 class="text-center">Login</h2>
+  <form
+    [formGroup]="loginForm"
+    (ngSubmit)="onSubmit()"
+    novalidate
+    class="d-flex-center"
+  >
+    <div class="example-container">
+      <div>
+        <mat-form-field>
+          <input matInput placeholder="username" formControlName="username" />
+          <mat-error
+            *ngIf="
+              (loginForm.get('username')?.dirty ||
+                loginForm.get('username')?.touched) &&
+              loginForm.get('username')?.errors?.required
+            "
+          >
+            Username is required
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="mt-top-2">
+        <mat-form-field>
+          <input
+            matInput
+            type="password"
+            placeholder="Password"
+            formControlName="password"
+          />
+          <mat-error
+            *ngIf="
+              (loginForm.get('password')?.dirty ||
+                loginForm.get('password')?.touched) &&
+              loginForm.get('password')?.errors?.required
+            "
+          >
+            Password is required
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="mt-top">
+        <button
+          [disabled]="!loginForm.valid"
+          mat-raised-button
+          color="primary"
+          mat-button
+        >
+          Sign In
+        </button>
+      </div>
+    </div>
+  </form>
+</div>

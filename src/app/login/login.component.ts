@@ -1,36 +1,37 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthenticateService } from '../service/authenticate.service';
-import { TokenStorageService } from '../service/token-storage.service';
+import { Router } from '@angular/router';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { AuthService } from '../services/auth.service';
+
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  styleUrls: ['./login.component.css'],
 })
 export class LoginComponent implements OnInit {
-  public isLoggedIn = false;
-  public username = '';
-  public password = '';
+  loginForm: FormGroup | any;
 
+  constructor(private authService: AuthService, private router: Router) {
+    this.loginForm = new FormGroup({
+      username: new FormControl('', [Validators.required]),
+      password: new FormControl('', [Validators.required]),
+    });
+  }
 
-  constructor(private authenticateService: AuthenticateService, private tokenStorage: TokenStorageService) { }
-  ngOnInit(): void {
-    if (this.tokenStorage.getToken()) {
-      this.isLoggedIn = true;
+  ngOnInit(): void {}
+
+  onSubmit() {
+    if (this.loginForm.valid) {
+      this.authService
+        .login(this.loginForm.value)
+        .subscribe(({ accessToken, refreshToken, username, roles }) => {
+          localStorage.setItem('accessToken', accessToken);
+          localStorage.setItem('refreshToken', refreshToken);
+          localStorage.setItem('username', username);
+          localStorage.setItem('roles', roles);
+
+          this.router.navigate(['home']);
+        });
     }
-  }
-  onSubmit(): void {
-    this.authenticateService.login(this.username, this.password).subscribe(
-      data => {
-        this.tokenStorage.saveLoginResponse(data);
-        this.isLoggedIn = true;
-        this.reloadPage();
-      },
-      err => {
-        this.isLoggedIn = false;
-      }
-    );
-  }
-  reloadPage(): void {
-    window.location.reload();
   }
 }

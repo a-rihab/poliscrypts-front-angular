@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { TokenStorageService } from './service/token-storage.service';
 
 @Component({
   selector: 'app-root',
@@ -8,24 +7,8 @@ import { TokenStorageService } from './service/token-storage.service';
 })
 export class AppComponent {
   title = 'poliscrypts-frontend';
-
-  private roles: string[] = [];
-  isLoggedIn = false;
-  showAdminBoard = false;
-  showModeratorBoard = false;
-  username?: string;
-  constructor(private tokenStorageService: TokenStorageService) { }
+  constructor() { }
   ngOnInit(): void {
-    this.isLoggedIn = !!this.tokenStorageService.getToken();
-    if (this.isLoggedIn) {
-      this.showAdminBoard = true;
-      this.showModeratorBoard = false;
-      this.username = "amer";
-    }
-  }
-  logout(): void {
-    this.tokenStorageService.signOut();
-    window.location.reload();
   }
 }
 
